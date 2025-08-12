@@ -3,7 +3,6 @@ import { json } from './middlewares/json.js';
 import { Database } from './database.js';
 
 const database = new Database();
-let nextId = 1;
 
 const server = http.createServer(async (req, res) => {
     const { method, url } = req;
@@ -28,7 +27,7 @@ const server = http.createServer(async (req, res) => {
             }
 
             const user = {
-                id: nextId++,
+                id: 1,
                 name,
                 email,
             };
