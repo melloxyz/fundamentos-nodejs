@@ -1,26 +1,52 @@
 import http from 'node:http';
 
-const users = []
+const users = [];
+let nextId = 1;
 
-const server = http.createServer((req, res) => {
-    const {method, url} = req
+const server = http.createServer(async (req, res) => {
+    const { method, url } = req;
+
+    const buffers = [];
+    for await (const chunk of req) {
+        buffers.push(chunk);
+    }
+
+    try {
+        req.body = JSON.parse(Buffer.concat(buffers).toString());
+    } catch {
+        req.body = undefined;
+    }
 
     if (method === 'GET' && url === '/users') {
-        return res
-        .setHeader('Content-Type', 'application/json')
-        .end(JSON.stringify(users))
+        res.setHeader('Content-Type', 'application/json');
+        return res.end(JSON.stringify(users));
     }
 
     if (method === 'POST' && url === '/users') {
-        users.push({
-            id: 1,
-            name: 'User 1',
-            email: 'user1@exemplo.com'
-        })
-        return res.writeHead(201).end()
+        if (req.body && typeof req.body === 'object') {
+            const { name, email } = req.body;
+
+            if (!name || !email) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                return res.end(JSON.stringify({ error: 'Nome e email são obrigatórios.' }));
+            }
+
+            users.push({
+                id: nextId++,
+                name,
+                email,
+            });
+
+            res.writeHead(201, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ message: 'Usuário criado com sucesso.' }));
+        } else {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ error: 'Corpo da requisição inválido.' }));
+        }
     }
 
-    return res.writeHead(404).end('Not Found')
-})
+    res.writeHead(404, { 'Content-Type': 'text/plain' });
+    res.end('Not Found');
+});
 
-server.listen(3333)
+server.listen(3333);
