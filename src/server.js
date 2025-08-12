@@ -13,14 +13,14 @@ const server = http.createServer((req, res) => {
 
     if (method === 'POST' && url === '/users') {
         users.push({
-            id: '1',
+            id: 1,
             name: 'User 1',
             email: 'user1@exemplo.com'
         })
-        return res.end('Criando Usuario')
+        return res.writeHead(201).end()
     }
 
-    return res.end('Hello World')
+    return res.writeHead(404).end('Not Found')
 })
 
 server.listen(3333)
