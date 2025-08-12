@@ -1,7 +1,8 @@
 import http from 'node:http';
 import { json } from './middlewares/json.js';
+import { Database } from './database.js';
 
-const users = [];
+const database = new Database();
 let nextId = 1;
 
 const server = http.createServer(async (req, res) => {
@@ -10,6 +11,8 @@ const server = http.createServer(async (req, res) => {
     await json(req, res);
 
     if (method === 'GET' && url === '/users') {
+        const users = database.select('users');
+
         res.setHeader('Content-Type', 'application/json');
         return res
         .end(JSON.stringify(users));
@@ -24,11 +27,13 @@ const server = http.createServer(async (req, res) => {
                 return res.end(JSON.stringify({ error: 'Nome e email são obrigatórios.' }));
             }
 
-            users.push({
+            const user = {
                 id: nextId++,
                 name,
                 email,
-            });
+            };
+
+            database.insert('users', user);
 
             res.writeHead(201, { 'Content-Type': 'application/json' });
             return res.end(JSON.stringify({ message: 'Usuário criado com sucesso.' }));
