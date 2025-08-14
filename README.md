@@ -58,20 +58,6 @@ Ao completar este projeto, você desenvolve/fortalece as seguintes habilidades:
 - Raciocínio para construir e debugar expressões regulares aplicadas ao roteamento.
 - Boas práticas: validação de entrada, tratamento de erros, e pensar sobre estado assíncrono (carregamento de DB).
 
-## Observações e recomendações
-
-- Evite depender de regex para capturar query string — separe `pathname` e `query` antes do match.
-- Ao gerar grupos nomeados dinamicamente, evite nomes duplicados (ex.: `id`) ou normalize os nomes depois do match.
-- Considere adicionar testes automatizados e mais validações.
-- Para produção, substitua a persistência em arquivo por um banco real e use frameworks como Express para produtividade.
-
-## Próximos exercícios sugeridos
-
-- Implementar paginação e ordenação em `GET /users`.
-- Adicionar autenticação básica.
-- Substituir a persistência por SQLite ou outro DB leve.
-- Implementar testes unitários para `Database` e testes de integração para as rotas.
-
 ---
 
 Projeto criado como estudo dos fundamentos do Node.js.
