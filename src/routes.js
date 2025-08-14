@@ -41,9 +41,13 @@ export const Routes = [
     },
     {
         method: 'DELETE',
-        path: BuildRoutePath('/users/:id/groups/:groupId'),
-        handler: (req, res) => {
-            return res.end()
+        path: BuildRoutePath('/users/:id'),
+        handler: (req, res, database) => {
+            const { id } = req.params;
+
+            database.delete('users', id);
+
+            return res.writeHead(204).end();
         }
     }
 ];  
