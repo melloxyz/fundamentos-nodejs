@@ -28,16 +28,12 @@ export class Database {
             return data;
         }
 
-        const normalizedSearch = Object.fromEntries(
-            Object.entries(search).map(([k, v]) => [k, v == null ? '' : String(v).toLowerCase()])
-        );
-
         if (search) {
             data = data.filter(row => {
-                return Object.entries(normalizedSearch).some(([key, value]) => {
-                    const rowValue = row[key];
+                return Object.entries(search).some(([key, value]) => {
+                    const rowValue = row[key].toLowerCase();
                     if (rowValue == null) return false;
-                    return rowValue && rowValue.includes(value);
+                    return rowValue && rowValue.includes(value.toLowerCase());
                 });
             });
         }
