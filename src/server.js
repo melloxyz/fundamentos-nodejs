@@ -1,6 +1,6 @@
 import http from 'node:http';
-import { randomUUID } from "node:crypto"
 import { json } from './middlewares/json.js';
+import { Routes } from './routes.js';
 import { Database } from './database.js';
 
 const database = new Database();
@@ -10,37 +10,16 @@ const server = http.createServer(async (req, res) => {
 
     await json(req, res);
 
-    if (method === 'GET' && url === '/users') {
-        const users = database.select('users');
+    const route = Routes.find(route => {
+        return route.method === method && route.path.test(url);
+    });
 
-        res.setHeader('Content-Type', 'application/json');
-        return res
-        .end(JSON.stringify(users));
-    }
+    if (route) {
+        const routeParams = req.url.match(route.path);
 
-    if (method === 'POST' && url === '/users') {
-        if (req.body && typeof req.body === 'object') {
-            const { name, email } = req.body;
+        console.log(routeParams) 
 
-            if (!name || !email) {
-                res.writeHead(400, { 'Content-Type': 'application/json' });
-                return res.end(JSON.stringify({ error: 'Nome e email são obrigatórios.' }));
-            }
-
-            const user = {
-                id: randomUUID(),
-                name,
-                email,
-            };
-
-            database.insert('users', user);
-
-            res.writeHead(201, { 'Content-Type': 'application/json' });
-            return res.end(JSON.stringify({ message: 'Usuário criado com sucesso.' }));
-        } else {
-            res.writeHead(400, { 'Content-Type': 'application/json' });
-            return res.end(JSON.stringify({ error: 'Corpo da requisição inválido.' }));
-        }
+        return route.handler(req, res, database);
     }
 
     res.writeHead(404, { 'Content-Type': 'text/plain' });
