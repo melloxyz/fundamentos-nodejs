@@ -40,6 +40,22 @@ export const Routes = [
         }
     },
     {
+        method: 'PUT',
+        path: BuildRoutePath('/users/:id'),
+        handler: (req, res, database) => {
+            const { id } = req.params;
+            if (!req.body || typeof req.body !== 'object') {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ error: 'Corpo da requisição inválido.' }));
+}
+            const { name, email } = req.body;
+
+            database.update('users', id, { name, email });
+
+            return res.writeHead(204).end();
+        }
+    },
+    {
         method: 'DELETE',
         path: BuildRoutePath('/users/:id'),
         handler: (req, res, database) => {
