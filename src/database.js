@@ -21,8 +21,27 @@ export class Database {
             });
     }
 
-    select(table) {
-        const data = this.database[table] || [];
+    select(table, search) {
+        let data = this.database[table] || [];
+
+        if (!search || Object.values(search).every(v => v === undefined || v === '')) {
+            return data;
+        }
+
+        const normalizedSearch = Object.fromEntries(
+            Object.entries(search).map(([k, v]) => [k, v == null ? '' : String(v).toLowerCase()])
+        );
+
+        if (search) {
+            data = data.filter(row => {
+                return Object.entries(normalizedSearch).some(([key, value]) => {
+                    const rowValue = row[key];
+                    if (rowValue == null) return false;
+                    return rowValue && rowValue.includes(value);
+                });
+            });
+        }
+
         return data;
     }
 
