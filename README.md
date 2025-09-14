@@ -50,7 +50,7 @@ O servidor ficará escutando em `http://localhost:3333`.
 
 ## Competências adquiridas
 
-Ao completar este projeto, você desenvolve/fortalece as seguintes habilidades:
+Ao completar este projeto, eu desenvolvi as seguintes habilidades:
 
 - Conhecimento prático do módulo `http` do Node.js.
 - Habilidade de criar middlewares simples e manipular o fluxo de requisição/resposta.
